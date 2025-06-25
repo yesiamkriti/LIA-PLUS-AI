@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 // @route   POST /api/auth/signup
 exports.signup = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password} = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -15,7 +15,7 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
-    const newUser = new User({ name, email, password: hashedPassword, role });
+    const newUser = new User({ name, email, password: hashedPassword, role:'user' });
     await newUser.save();
 
     res.status(201).json({ message: 'User created successfully' });
