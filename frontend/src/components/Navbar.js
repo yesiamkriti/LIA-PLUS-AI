@@ -1,19 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
   const navigate = useNavigate();
-  const [role, setRole] = useState(null);
-  const [token, setToken] = useState(null);
+  const { token, role, logout } = useContext(AuthContext);
 
-  useEffect(() => {
-    setRole(localStorage.getItem('role'));
-    setToken(localStorage.getItem('token'));
-  }, []);
-
-  const logout = () => {
-    localStorage.clear();
+  const handleLogout = () => {
+    logout();
     navigate('/login');
   };
 
@@ -37,13 +33,27 @@ const Navbar = () => {
                 {role === 'admin' && (
                   <li><Link to="/admin" className="text-gray-700 hover:text-green-600">Admin</Link></li>
                 )}
-                <li>
+
+                <li className="relative">
                   <button
-                    onClick={logout}
-                    className="text-red-500 hover:text-red-700 font-semibold"
+                    onClick={() => setDropdown(!dropdown)}
+                    className="text-gray-700 hover:text-indigo-600"
                   >
-                    Logout
+                    Profile ▼
                   </button>
+                  {dropdown && (
+                    <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
+                      <p className="px-4 py-2 text-sm text-gray-800 capitalize border-b">
+                        Role: {role}
+                      </p>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-2 text-left text-red-500 hover:bg-red-100"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
                 </li>
               </>
             )}
